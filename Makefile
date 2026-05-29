@@ -1,20 +1,41 @@
 # Agent-friendly Xcode build for HIIT Timer
 # Usage:
-#   make build    — build only
-#   make test     — run tests
+#   make build    — build for iOS Simulator
+#   make run      — build, boot simulator, install & launch
 #   make clean    — clean build folder
 
 SCHEME := HIITTimer
+PROJECT := HIITTimer.xcodeproj
 DESTINATION := platform=iOS Simulator,name=iPhone 17
+DERIVED := .build
+SIM_UDID := $(shell xcrun simctl list devices available | grep "iPhone 17 (" | head -1 | sed -E 's/.*\\(([A-F0-9-]+)\\).*/\\1/')
+BUNDLE_ID := com.mitchellbernstein.hiittimer
 
-.PHONY: build test clean
+.PHONY: build run clean project
 
-build:
-	swift build 2>&1 | xcbeautify
+# Default: build
+all: build
 
-test:
-	swift test 2>&1 | xcbeautify
+project:
+	xcodegen generate
+
+build: project
+	set -o pipefail && xcodebuild build \
+		-project $(PROJECT) \
+		-scheme $(SCHEME) \
+		-destination '$(DESTINATION)' \
+		-derivedDataPath $(DERIVED) 2>&1 | tail -5
+
+run: build
+	@echo "Booting simulator..."
+	xcrun simctl boot $(SIM_UDID) 2>/dev/null || true
+	xcrun simctl bootstatus $(SIM_UDID) -b
+	@echo "Installing..."
+	xcrun simctl install booted $(DERIVED)/Build/Products/Debug-iphonesimulator/$(SCHEME).app
+	@echo "Launching..."
+	xcrun simctl launch booted $(BUNDLE_ID)
+	@echo "Done! App is running on simulator."
 
 clean:
-	swift package clean
-	rm -rf .build
+	rm -rf $(DERIVED)
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) clean 2>/dev/null || true

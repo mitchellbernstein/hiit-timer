@@ -3,6 +3,6 @@ DerivedData/
 *.xcworkspace
 xcuserdata/
 Pods/
-.build/
-*.xcodeproj/xcuserdata/
-*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/
+HIITTimer.xcodeproj/
+screenshot.png\nscreen.mp4\n*.mp4.sb-*
