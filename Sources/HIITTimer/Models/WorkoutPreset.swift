@@ -13,6 +13,7 @@ struct WorkoutPreset: Identifiable, Codable, Equatable {
     var emomTotalMinutes: Int
     var amrapMinutes: Int
     var countdownSeconds: Int
+    var musicQuery: String
 
     init(
         name: String,
@@ -25,7 +26,8 @@ struct WorkoutPreset: Identifiable, Codable, Equatable {
         emomIntervalSeconds: Int = 60,
         emomTotalMinutes: Int = 12,
         amrapMinutes: Int = 10,
-        countdownSeconds: Int = 300
+        countdownSeconds: Int = 300,
+        musicQuery: String = ""
     ) {
         self.name = name
         self.type = type
@@ -38,6 +40,7 @@ struct WorkoutPreset: Identifiable, Codable, Equatable {
         self.emomTotalMinutes = emomTotalMinutes
         self.amrapMinutes = amrapMinutes
         self.countdownSeconds = countdownSeconds
+        self.musicQuery = musicQuery
     }
 
     var totalDurationSeconds: Int {
@@ -70,56 +73,50 @@ extension WorkoutPreset {
     static let standardHIIT = WorkoutPreset(
         name: "Standard HIIT",
         type: .intervals,
-        workSeconds: 40,
-        restSeconds: 20,
-        rounds: 8,
-        warmupSeconds: 30,
-        cooldownSeconds: 30
+        workSeconds: 40, restSeconds: 20, rounds: 8,
+        warmupSeconds: 30, cooldownSeconds: 30,
+        musicQuery: "high intensity workout"
     )
 
     static let tabata = WorkoutPreset(
         name: "Tabata",
         type: .tabata,
-        warmupSeconds: 30,
-        cooldownSeconds: 30
+        warmupSeconds: 30, cooldownSeconds: 30,
+        musicQuery: "electronic workout"
     )
 
     static let beginnerHIIT = WorkoutPreset(
         name: "Beginner HIIT",
         type: .intervals,
-        workSeconds: 30,
-        restSeconds: 60,
-        rounds: 6,
-        warmupSeconds: 60,
-        cooldownSeconds: 60
+        workSeconds: 30, restSeconds: 60, rounds: 6,
+        warmupSeconds: 60, cooldownSeconds: 60,
+        musicQuery: "pop running"
     )
 
     static let advancedHIIT = WorkoutPreset(
         name: "Advanced HIIT",
         type: .intervals,
-        workSeconds: 45,
-        restSeconds: 15,
-        rounds: 12,
-        warmupSeconds: 30,
-        cooldownSeconds: 30
+        workSeconds: 45, restSeconds: 15, rounds: 12,
+        warmupSeconds: 30, cooldownSeconds: 30,
+        musicQuery: "gym motivation"
     )
 
     static let emom12 = WorkoutPreset(
         name: "EMOM 12",
-        type: .emom,
-        emomTotalMinutes: 12
+        type: .emom, emomTotalMinutes: 12,
+        musicQuery: "hip hop gym"
     )
 
     static let amrap10 = WorkoutPreset(
         name: "AMRAP 10",
-        type: .amrap,
-        amrapMinutes: 10
+        type: .amrap, amrapMinutes: 10,
+        musicQuery: "rock training"
     )
 
     static let countdown5 = WorkoutPreset(
         name: "5 Min Countdown",
-        type: .countdown,
-        countdownSeconds: 300
+        type: .countdown, countdownSeconds: 300,
+        musicQuery: "electronic workout"
     )
 
     static let defaultPresets: [WorkoutPreset] = [
