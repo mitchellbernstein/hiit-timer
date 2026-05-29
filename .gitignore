@@ -5,4 +5,6 @@ xcuserdata/
 Pods/
 *.xcodeproj/
 HIITTimer.xcodeproj/
-screenshot.png\nscreen.mp4\n*.mp4.sb-*
+screenshot*.png
+screen*.mp4
+*.mp4.sb-*

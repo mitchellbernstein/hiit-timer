@@ -1,52 +1,37 @@
 import SwiftUI
 
-enum AppTab: String, CaseIterable {
-    case timer = "Timer"
-    case presets = "Presets"
-    case music = "Music"
-
-    var systemImage: String {
-        switch self {
-        case .timer: "stopwatch"
-        case .presets: "list.bullet"
-        case .music: "music.note"
-        }
-    }
-}
-
 @available(iOS 26.1, *)
 struct ContentView: View {
     @Environment(MusicService.self) private var music
     @Environment(TimerEngine.self) private var timer
 
-    @State private var selectedTab: AppTab = .timer
-    @State private var showAccessory: Bool = false
+    @State private var showPresets = false
+    @State private var showMusic = false
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            TimerView()
-                .tabItem {
-                    Label(AppTab.timer.rawValue, systemImage: AppTab.timer.systemImage)
-                }
-                .tag(AppTab.timer)
+        ZStack {
+            TimerView(
+                showPresets: $showPresets,
+                showMusic: $showMusic
+            )
 
-            PresetsView()
-                .tabItem {
-                    Label(AppTab.presets.rawValue, systemImage: AppTab.presets.systemImage)
+            if music.currentSong != nil {
+                VStack {
+                    Spacer()
+                    FloatingPlayer()
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 4)
                 }
-                .tag(AppTab.presets)
-
-            MusicView()
-                .tabItem {
-                    Label(AppTab.music.rawValue, systemImage: AppTab.music.systemImage)
-                }
-                .tag(AppTab.music)
+            }
         }
-        .tint(.white)
-        .tabViewBottomAccessory(isEnabled: music.currentSong != nil) {
-            FloatingPlayer()
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+        .sheet(isPresented: $showPresets) {
+            PresetsSheet()
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showMusic) {
+            MusicSheet()
+                .presentationDetents([.large])
         }
     }
 }
@@ -54,22 +39,21 @@ struct ContentView: View {
 @available(iOS 26.1, *)
 struct FloatingPlayer: View {
     @Environment(MusicService.self) private var music
-    @Environment(\.tabViewBottomAccessoryPlacement) private var placement
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 12) {
             if let artwork = music.currentArtwork {
                 Image(uiImage: artwork)
                     .resizable()
-                    .frame(width: 44, height: 44)
+                    .frame(width: 40, height: 40)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             } else {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(.white.opacity(0.1))
-                    .frame(width: 44, height: 44)
+                    .frame(width: 40, height: 40)
                     .overlay(
                         Image(systemName: "music.note")
-                            .font(.title3)
+                            .font(.caption)
                             .foregroundStyle(.white.opacity(0.4))
                     )
             }
@@ -80,7 +64,7 @@ struct FloatingPlayer: View {
                     .foregroundStyle(.white)
                     .lineLimit(1)
 
-                Text(music.currentSong?.artistName ?? "Tap to browse")
+                Text(music.currentSong?.artistName ?? "")
                     .font(.system(.caption2, design: .rounded))
                     .foregroundStyle(.white.opacity(0.5))
                     .lineLimit(1)
@@ -104,5 +88,8 @@ struct FloatingPlayer: View {
                     .foregroundStyle(.white)
             }
         }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .glassEffect(.regular, in: .rect(cornerRadius: 16))
     }
 }

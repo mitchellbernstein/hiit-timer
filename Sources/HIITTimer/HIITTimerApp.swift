@@ -8,6 +8,7 @@ struct HIITTimerApp: App {
     @State private var hapticService = HapticService()
     @State private var audioFeedback = AudioFeedbackService()
     @State private var presetStore = PresetStore()
+    @State private var historyStore = HistoryStore()
 
     var body: some Scene {
         WindowGroup {
@@ -17,6 +18,7 @@ struct HIITTimerApp: App {
                 .environment(hapticService)
                 .environment(audioFeedback)
                 .environment(presetStore)
+                .environment(historyStore)
                 .preferredColorScheme(.dark)
         }
     }
