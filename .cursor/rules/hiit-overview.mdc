@@ -1,0 +1,20 @@
+---
+alwaysApply: true
+---
+
+# HIIT Timer Overview
+
+iOS 26+ HIIT workout timer with Liquid Glass, Apple Music, and large workout-friendly controls.
+
+**Architecture**: MV with `@Observable` + `@MainActor`
+**Music**: MusicKit `ApplicationMusicPlayer` (not SystemMusicPlayer)
+**Glass**: `.glassEffect()` goes AFTER layout modifiers; use `GlassEffectContainer` for groups
+**Controls**: Minimum 44pt tap targets; use `.buttonStyle(.plain)` for custom glass buttons
+**Concurrency**: All `@Observable` classes are `@MainActor`; use `nonisolated(unsafe)` for non-Sendable singletons (ApplicationMusicPlayer)
+
+**Key Services**:
+- `TimerEngine` — core timer state machine
+- `MusicService` — Apple Music integration
+- `HapticService` — CoreHaptics patterns
+- `AudioFeedbackService` — AVFoundation sounds
+- `PresetStore` — UserDefaults persistence
